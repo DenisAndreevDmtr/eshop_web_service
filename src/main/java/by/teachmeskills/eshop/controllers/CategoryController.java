@@ -76,7 +76,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
         CategoryDto createdCategoryDto = categoryService.createCategoryFromDto(categoryDto);
         if (Optional.ofNullable(createdCategoryDto).isPresent()) {
-            return new ResponseEntity<>(categoryDto, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdCategoryDto, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -101,7 +101,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto) {
         CategoryDto updatedCategoryDto = categoryService.updateCategoryFromDto(categoryDto);
         if (Optional.ofNullable(updatedCategoryDto).isPresent()) {
-            return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+            return new ResponseEntity<>(updatedCategoryDto, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -122,7 +122,7 @@ public class CategoryController {
             )
     })
     @PostMapping("/delete")
-    public ResponseEntity<CategoryDto> deleteCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity deleteCategory(@RequestBody CategoryDto categoryDto) {
         try {
             categoryService.deleteCategoryFromDto(categoryDto);
             return new ResponseEntity<>(HttpStatus.OK);

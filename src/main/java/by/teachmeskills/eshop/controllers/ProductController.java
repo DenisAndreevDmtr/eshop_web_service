@@ -48,7 +48,7 @@ public class ProductController {
             )
     })
     @GetMapping("/{id}")
-    public ResponseEntity openProductPage(@Min(value = 1) @PathVariable int id) {
+    public ResponseEntity<ProductDto> openProductPage(@Min(value = 1) @PathVariable int id) {
         ProductDto productDto = productService.getProductData(id);
         if (Optional.ofNullable(productDto).isPresent()) {
             return new ResponseEntity<>(productDto, HttpStatus.OK);
@@ -72,10 +72,10 @@ public class ProductController {
             )
     })
     @PostMapping("/create")
-    public ResponseEntity createProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
         ProductDto createdProductDto = productService.createFromDto(productDto);
         if (Optional.ofNullable(createdProductDto).isPresent()) {
-            return new ResponseEntity<>(productDto, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdProductDto, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -96,10 +96,10 @@ public class ProductController {
             )
     })
     @PostMapping("/update")
-    public ResponseEntity updateProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto) {
         ProductDto updatedProductDto = productService.updateFromDto(productDto);
         if (Optional.ofNullable(updatedProductDto).isPresent()) {
-            return new ResponseEntity<>(productDto, HttpStatus.CREATED);
+            return new ResponseEntity<>(updatedProductDto, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

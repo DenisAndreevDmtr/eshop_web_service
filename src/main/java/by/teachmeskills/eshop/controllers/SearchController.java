@@ -53,10 +53,13 @@ public class SearchController {
             )
     })
     @GetMapping
-    public ResponseEntity openSearchPage() {
-        return new ResponseEntity<>(categoryService.getSearchPageData(), HttpStatus.OK);
+    public ResponseEntity<List<CategoryDto>> openSearchPage() {
+        try {
+            return new ResponseEntity<>(categoryService.getSearchPageData(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
-
 
     @Operation(
             summary = "Search result",
@@ -74,7 +77,7 @@ public class SearchController {
             )
     })
     @PostMapping
-    public ResponseEntity getSearchResult(@RequestParam(SEARCH_PARAM) String searchParametr) {
+    public ResponseEntity<List<ProductDto>> getSearchResult(@RequestParam(SEARCH_PARAM) String searchParametr) {
         List<ProductDto> productDtos = productService.getSearchResult(searchParametr);
         if (Optional.ofNullable(productDtos).isPresent()) {
             return new ResponseEntity<>(productDtos, HttpStatus.OK);

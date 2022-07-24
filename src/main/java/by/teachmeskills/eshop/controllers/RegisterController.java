@@ -1,5 +1,6 @@
 package by.teachmeskills.eshop.controllers;
 
+import by.teachmeskills.eshop.dto.ProductDto;
 import by.teachmeskills.eshop.dto.UserDto;
 import by.teachmeskills.eshop.entities.User;
 import by.teachmeskills.eshop.services.UserService;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
-
-import static by.teachmeskills.eshop.utils.EshopConstants.USER;
 
 @Tag(name = "register", description = "The register API")
 @RestController
@@ -47,16 +46,11 @@ public class RegisterController {
             )
     })
     @PostMapping
-    public ResponseEntity registerUser(@ModelAttribute(USER) User user, @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto) {
         UserDto userRegistered = userService.registerNewUser(userDto);
         if (Optional.ofNullable(userRegistered).isPresent()) {
             return new ResponseEntity<>(userRegistered, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
-    @ModelAttribute(USER)
-    public User setUpUserForm() {
-        return new User();
     }
 }

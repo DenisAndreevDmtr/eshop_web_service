@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getDataAboutLoggedInUserPaging(User user, int userId, int number) {
+    public UserDto getDataAboutLoggedInUserPaging(int userId, int number) {
         try {
             User loggedInUser = userRepository.getUserById(userId);
             List<Order> ordersList = orderRepository.getAllOrdersByUserId(userId, number);

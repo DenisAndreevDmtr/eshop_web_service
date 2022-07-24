@@ -16,7 +16,6 @@ public class CategoryConverter {
     }
 
     public CategoryDto toDto(Category category) {
-        System.out.println(category.getId());
         return Optional.ofNullable(category).map(c -> CategoryDto.builder()
                         .id(c.getId())
                         .name(c.getName())
@@ -29,10 +28,10 @@ public class CategoryConverter {
 
     public Category fromDto(CategoryDto categoryDto) {
         return Optional.ofNullable(categoryDto).map(cd -> Category.builder()
-                        .id(categoryDto.getId())
-                        .name(categoryDto.getName())
-                        .rating(categoryDto.getRating())
-                        .imagePath(categoryDto.getImagePath())
+                        .id(cd.getId())
+                        .name(cd.getName())
+                        .rating(cd.getRating())
+                        .imagePath(cd.getImagePath())
                         .build())
                 .orElse(null);
     }

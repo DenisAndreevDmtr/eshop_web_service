@@ -12,5 +12,5 @@ public interface UserService extends BaseService<User> {
 
     UserDto registerNewUser(UserDto userForLoginDto);
 
-    UserDto getDataAboutLoggedInUserPaging(User user, int userId, int pageNumber);
+    UserDto getDataAboutLoggedInUserPaging(int userId, int pageNumber);
 }

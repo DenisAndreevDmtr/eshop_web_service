@@ -27,12 +27,9 @@ import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 
-import static by.teachmeskills.eshop.utils.EshopConstants.USER;
-
 @Tag(name = "authentication", description = "The authentication API")
 @RestController
 @Validated
-//@SessionAttributes({USER})
 @RequestMapping("/signin")
 public class AuthController {
     private final UserService userService;
@@ -57,7 +54,7 @@ public class AuthController {
             )
     })
     @PostMapping
-    public ResponseEntity login(@ModelAttribute(USER) User user, @RequestBody UserDto userDto) throws AuthorizationException {
+    public ResponseEntity<List<CategoryDto>> login(@RequestBody UserDto userDto) throws AuthorizationException {
         List<CategoryDto> categoryDtoList = userService.authenticate(userDto);
         if (Optional.ofNullable(categoryDtoList).isPresent()) {
             return new ResponseEntity<>(categoryDtoList, HttpStatus.OK);
@@ -82,21 +79,15 @@ public class AuthController {
             )
     })
     @GetMapping("/profile/{userId}/{pageNumber}")
-    public ResponseEntity getUserData(@ModelAttribute(USER) User user,
-                                      @Min(value = 1, message = "Min value for Id is 1")
-                                      @PathVariable int userId,
-                                      @Min(value = 1, message = "Min value for page number is 1")
-                                      @PathVariable int pageNumber) {
-        UserDto userDto = userService.getDataAboutLoggedInUserPaging(user, userId, pageNumber);
+    public ResponseEntity<UserDto> getUserData(
+            @Min(value = 1)
+            @PathVariable int userId,
+            @Min(value = 1)
+            @PathVariable int pageNumber) {
+        UserDto userDto = userService.getDataAboutLoggedInUserPaging(userId, pageNumber);
         if (Optional.ofNullable(userDto).isPresent()) {
             return new ResponseEntity<>(userDto, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-    }
-
-    @ModelAttribute(USER)
-    public User setUpUserForm() {
-        return new User();
     }
 }

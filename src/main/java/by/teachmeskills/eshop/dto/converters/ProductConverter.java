@@ -5,6 +5,8 @@ import by.teachmeskills.eshop.entities.Product;
 import by.teachmeskills.eshop.repositories.CategoryRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class ProductConverter {
     private final CategoryRepository categoryRepository;
@@ -14,23 +16,25 @@ public class ProductConverter {
     }
 
     public ProductDto toDto(Product product) {
-        return ProductDto.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .imagePath(product.getImagePath())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .categoryId(product.getCategory().getId())
-                .build();
+        return Optional.ofNullable(product).map(p -> ProductDto.builder()
+                        .id(p.getId())
+                        .name(p.getName())
+                        .imagePath(p.getImagePath())
+                        .description(p.getDescription())
+                        .price(p.getPrice())
+                        .categoryId(p.getCategory().getId())
+                        .build()).
+                orElse(null);
     }
 
     public Product fromDto(ProductDto productDto) {
-        return Product.builder()
-                .id(productDto.getId())
-                .name(productDto.getName())
-                .description(productDto.getDescription())
-                .price(productDto.getPrice()).imagePath("/images/new.jpg")
-                .category(categoryRepository.getCategoryById(productDto.getCategoryId()))
-                .build();
+        return Optional.ofNullable(productDto).map(pd -> Product.builder()
+                        .id(pd.getId())
+                        .name(pd.getName())
+                        .description(pd.getDescription())
+                        .price(pd.getPrice()).imagePath("/images/new.jpg")
+                        .category(categoryRepository.getCategoryById(pd.getCategoryId()))
+                        .build()).
+                orElse(null);
     }
 }

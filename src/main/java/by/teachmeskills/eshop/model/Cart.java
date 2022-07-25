@@ -2,7 +2,10 @@ package by.teachmeskills.eshop.model;
 
 import by.teachmeskills.eshop.entities.BaseEntity;
 import by.teachmeskills.eshop.entities.Product;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,11 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuperBuilder
 @Setter
+@Getter
+@AllArgsConstructor
 public class Cart extends BaseEntity {
 
     private Map<Product, Integer> products;
     private BigDecimal totalPrice = new BigDecimal(0);
+    private int userId;
 
     public Cart() {
         this.products = new HashMap<>();

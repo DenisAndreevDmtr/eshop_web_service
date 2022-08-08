@@ -10,9 +10,11 @@ import java.util.Optional;
 @Component
 public class UserConverter {
     private final OrderConverter orderConverter;
+    private final RoleConverter roleConverter;
 
-    public UserConverter(OrderConverter orderConverter) {
+    public UserConverter(OrderConverter orderConverter, RoleConverter roleConverter) {
         this.orderConverter = orderConverter;
+        this.roleConverter = roleConverter;
     }
 
     public UserDto toDto(User user) {
@@ -25,6 +27,7 @@ public class UserConverter {
                         .dateBorn(u.getDateBorn())
                         .eMail(u.getEMail())
                         .balance(u.getBalance())
+                        .roleName(u.getRole().getName())
                         .orders(Optional.ofNullable(u.getOrder()).map(products -> products.stream().map(orderConverter::toDto).toList()).orElse(List.of()))
                         .build())
                 .orElse(null);
@@ -39,6 +42,7 @@ public class UserConverter {
                         .dateBorn(u.getDateBorn())
                         .eMail(u.getEMail())
                         .balance(u.getBalance())
+                        .role(roleConverter.fromDto(u.getRoleName()))
                         .order(Optional.ofNullable(u.getOrders()).map(products -> products.stream().map(orderConverter::fromDto).toList()).orElse(List.of()))
                         .build())
                 .orElse(null);

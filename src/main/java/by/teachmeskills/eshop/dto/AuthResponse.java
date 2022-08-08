@@ -5,29 +5,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.util.Map;
 import java.util.Objects;
 
-@Builder
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class CartDto {
-    private Map<Object, Integer> products;
-    private BigDecimal totalPrice;
-    private int userId;
+@AllArgsConstructor
+public class AuthResponse {
+    private String accessToken;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CartDto cartDto = (CartDto) o;
-        return userId == cartDto.userId && Objects.equals(totalPrice, cartDto.totalPrice);
+        AuthResponse that = (AuthResponse) o;
+        return Objects.equals(accessToken, that.accessToken);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(totalPrice, userId);
+        return Objects.hash(accessToken);
     }
 }

@@ -1,5 +1,6 @@
 package by.teachmeskills.eshop.entities;
 
+import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,17 +27,20 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "internet_shop.order")
+@Table(name = "orders")
 public class Order extends BaseEntity {
     @Column(name = "price")
+    @CsvBindByName(column = "priceOrder")
     private BigDecimal priceOrder;
     @Column(name = "date_Order")
+    @CsvBindByName(column = "dateCreation")
     private LocalDate dateCreation;
     @ManyToOne
     private User user;
     @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyJoinColumn(name = "product_id")
     @Column(name = "product_quantity", nullable = false)
+    @CsvBindByName(column = "products")
     private Map<Product, Integer> products = new HashMap<>();
 
     public Map<Product, Integer> getProducts() {

@@ -1,5 +1,6 @@
 package by.teachmeskills.eshop.entities;
 
+import com.opencsv.bean.CsvBindByName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -25,12 +25,15 @@ import java.util.Objects;
 @Table(name = "category")
 public class Category extends BaseEntity {
     @Column(name = "name")
+    @CsvBindByName(column = "name")
     private String name;
     @Column(name = "rating")
+    @CsvBindByName(column = "rating")
     private int rating;
     @Column(name = "image_Path")
+    @CsvBindByName(column = "image_path")
     private String imagePath;
-    @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Product> productList;
 

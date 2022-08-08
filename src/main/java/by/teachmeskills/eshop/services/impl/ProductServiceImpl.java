@@ -1,17 +1,22 @@
 package by.teachmeskills.eshop.services.impl;
 
 import by.teachmeskills.eshop.dto.ProductDto;
+import by.teachmeskills.eshop.dto.SearchParamsDto;
 import by.teachmeskills.eshop.dto.converters.ProductConverter;
+import by.teachmeskills.eshop.entities.Category;
 import by.teachmeskills.eshop.entities.Product;
 import by.teachmeskills.eshop.repositories.CategoryRepository;
 import by.teachmeskills.eshop.repositories.ProductRepository;
+import by.teachmeskills.eshop.repositories.ProductSearchSpecification;
 import by.teachmeskills.eshop.services.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -27,14 +32,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(Product entity) {
-        return productRepository.create(entity);
+        return productRepository.save(entity);
     }
 
     @Override
     public ProductDto createFromDto(ProductDto productDto) {
         try {
             Product product = productConverter.fromDto(productDto);
-            product = productRepository.create(product);
+            product = productRepository.save(product);
             return productConverter.toDto(product);
         } catch (Exception e) {
             return null;
@@ -43,19 +48,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> read() {
-        return productRepository.read();
+        return productRepository.findAll();
     }
 
     @Override
     public Product update(Product entity) {
-        return productRepository.update(entity);
+        return productRepository.save(entity);
     }
 
     @Override
     public ProductDto updateFromDto(ProductDto productDto) {
         try {
             Product product = productConverter.fromDto(productDto);
-            product = productRepository.update(product);
+            product = productRepository.save(product);
             return productConverter.toDto(product);
         } catch (Exception e) {
             return null;
@@ -64,17 +69,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(int id) {
-        productRepository.delete(id);
+        productRepository.deleteProductById(id);
     }
 
     @Override
     public void deleteFromDto(ProductDto productDto) {
-        productRepository.delete(productDto.getId());
+        productRepository.deleteProductById(productDto.getId());
     }
 
     @Override
-    public List<Product> getAllProductsByCategory(int categoryId) {
-        return productRepository.getAllProductsByCategoryId(categoryId);
+    public Page<Product> getAllProductsByCategory(int categoryId, int pageNumber, int pageSize) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending());
+        return productRepository.findAllByCategoryId(categoryId, paging);
     }
 
     @Override
@@ -83,21 +89,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getSearchResult(String searchParametr) {
-        List<Product> productListResult = productRepository.getListProductsByNameOrDesc(searchParametr);
-        List<Product> requestProducts = new ArrayList<>();
-        requestProducts.addAll(productListResult.stream().filter(x -> x.getName().contains(searchParametr)).collect(Collectors.toList()));
-        requestProducts.addAll(productListResult.stream().filter(x -> !x.getName().contains(searchParametr)).collect(Collectors.toList()));
-        return requestProducts.stream().map(productConverter::toDto).toList();
+    public List<ProductDto> searchProducts(Optional<Integer> oPriceFrom, Optional<Integer> oPriceTo, String searchParametr, String searchCategory, int pageNumber, int pageSize) {
+        int priceFrom = getIntValue(oPriceFrom);
+        int priceTo = getIntValue(oPriceTo);
+        SearchParamsDto searchParamsDto = SearchParamsDto.builder().
+                searchParametr(searchParametr).priceFrom(priceFrom).priceTo(priceTo).searchCategory(searchCategory).build();
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending());
+        ProductSearchSpecification productSearchSpecification = new ProductSearchSpecification(searchParamsDto);
+        List<Product> searchResult = productRepository.findAll(productSearchSpecification, paging).getContent();
+        return searchResult.stream().map(productConverter::toDto).toList();
     }
 
-    @Override
-    public List<Product> getAllProductsByCategoryPaging(int categoryId, int number) {
-        return productRepository.getAllProductsByCategoryIdPaging(categoryId, number);
-    }
-
-    @Override
-    public long countAllProductsByCategory(int categoryId) {
-        return productRepository.countAllProductsByCategory(categoryId);
+    private int getIntValue(Optional<Integer> optionalInteger) {
+        int result;
+        if (optionalInteger.isEmpty()) {
+            result = 0;
+        } else {
+            result = optionalInteger.get();
+        }
+        return result;
     }
 }

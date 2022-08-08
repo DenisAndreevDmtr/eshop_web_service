@@ -12,7 +12,7 @@ public interface CategoryService extends BaseService<Category> {
 
     List<CategoryDto> getSearchPageData();
 
-    CategoryDto getCategoryDataPaging(int id, int number);
+    CategoryDto getCategoryData(int id, int pageNumber, int pageSize);
 
     CategoryDto createCategoryFromDto(CategoryDto categoryDto);
 

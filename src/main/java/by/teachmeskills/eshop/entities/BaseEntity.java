@@ -1,5 +1,6 @@
 package by.teachmeskills.eshop.entities;
 
+import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import javax.persistence.MappedSuperclass;
 public class BaseEntity {
     @Id
     @Column(name = "id")
+    @CsvBindByName(column = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
 }

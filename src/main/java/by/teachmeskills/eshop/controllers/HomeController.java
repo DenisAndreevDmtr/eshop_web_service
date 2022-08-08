@@ -51,4 +51,24 @@ public class HomeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation(
+            summary = "Open admin page",
+            description = "Open home page information",
+            tags = {"home"})
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Find home page info",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoryDto.class)))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found - not found"
+            )
+    })
+    @GetMapping("/files")
+    public ResponseEntity getAdminPanel() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

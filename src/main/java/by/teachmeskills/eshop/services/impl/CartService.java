@@ -65,13 +65,13 @@ public class CartService {
             LocalDate date = LocalDate.now();
             BigDecimal priceOrder = cart.getTotalPrice();
             Map<Product, Integer> products = cart.getProductsAndQuantity();
-            User user = userRepository.getUserById(cart.getUserId());
+            User user = userRepository.findById(cart.getUserId()).get();
             Order order = Order.builder().priceOrder(priceOrder).
                     dateCreation(date).
                     user(user).
                     products(products).
                     build();
-            Order createdOrder = orderRepository.create(order);
+            Order createdOrder = orderRepository.save(order);
             return orderConverter.toDto(createdOrder);
         } catch (Exception e) {
             return null;

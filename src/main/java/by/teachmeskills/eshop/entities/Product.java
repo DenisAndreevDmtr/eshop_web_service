@@ -6,10 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -26,13 +24,13 @@ import java.util.Objects;
 public class Product extends BaseEntity {
     @Column(name = "name")
     private String name;
-    @Column(name = "image_Path")
+    @Column(name = "image_path")
     private String imagePath;
     @Column(name = "description")
     private String description;
     @Column(name = "price")
     private BigDecimal price;
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
@@ -48,5 +46,9 @@ public class Product extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), name, imagePath, description, price);
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }

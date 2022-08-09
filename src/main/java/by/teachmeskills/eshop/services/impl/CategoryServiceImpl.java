@@ -7,6 +7,7 @@ import by.teachmeskills.eshop.entities.Product;
 import by.teachmeskills.eshop.repositories.CategoryRepository;
 import by.teachmeskills.eshop.services.CategoryService;
 import by.teachmeskills.eshop.services.ProductService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto createCategoryFromDto(CategoryDto categoryDto) {
         try {
             Category category = categoryConverter.fromDto(categoryDto);
-            category = categoryRepository.create(category);
+            category = categoryRepository.save(category);
             return categoryConverter.toDto(category);
         } catch (Exception e) {
             return null;
@@ -38,23 +39,23 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category create(Category entity) {
-        Category category = categoryRepository.create(entity);
+        Category category = categoryRepository.save(entity);
         return category;
     }
 
     @Override
     public List<Category> read() {
-        return categoryRepository.read();
+        return categoryRepository.findAll();
     }
 
     @Override
     public List<CategoryDto> readDto() {
-        return categoryRepository.getAllCategories().stream().map(categoryConverter::toDto).toList();
+        return categoryRepository.findAll().stream().map(categoryConverter::toDto).toList();
     }
 
     @Override
     public Category update(Category entity) {
-        Category category = categoryRepository.update(entity);
+        Category category = categoryRepository.save(entity);
         return category;
     }
 
@@ -62,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto updateCategoryFromDto(CategoryDto categoryDto) {
         try {
             Category category = categoryConverter.fromDto(categoryDto);
-            category = categoryRepository.update(category);
+            category = categoryRepository.save(category);
             return categoryConverter.toDto(category);
         } catch (Exception e) {
             return null;
@@ -71,30 +72,30 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(int id) {
-        categoryRepository.delete(id);
+        categoryRepository.deleteById(id);
     }
 
     @Override
     public void deleteCategoryFromDto(CategoryDto categoryDto) {
-        categoryRepository.delete(categoryDto.getId());
+        categoryRepository.deleteById(categoryDto.getId());
     }
 
     @Override
     public List<CategoryDto> getHomePageData() {
-        return categoryRepository.getAllCategories().stream().map(categoryConverter::toDto).toList();
+        return categoryRepository.findAll().stream().map(categoryConverter::toDto).toList();
     }
 
     @Override
     public List<CategoryDto> getSearchPageData() {
-        return categoryRepository.getAllCategories().stream().map(categoryConverter::toDto).toList();
+        return categoryRepository.findAll().stream().map(categoryConverter::toDto).toList();
     }
 
     @Override
-    public CategoryDto getCategoryDataPaging(int id, int number) {
+    public CategoryDto getCategoryData(int id, int pageNumber, int pageSize) {
         Category category = categoryRepository.getCategoryById(id);
         if (Optional.ofNullable(category).isPresent()) {
-            List<Product> products = productService.getAllProductsByCategoryPaging(category.getId(), number);
-            category.setProductList(products);
+            Page<Product> products = productService.getAllProductsByCategory(category.getId(), pageNumber, pageSize);
+            category.setProductList(products.getContent());
         }
         return categoryConverter.toDto(category);
     }

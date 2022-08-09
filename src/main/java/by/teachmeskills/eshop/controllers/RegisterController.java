@@ -1,8 +1,7 @@
 package by.teachmeskills.eshop.controllers;
 
-import by.teachmeskills.eshop.dto.ProductDto;
+import by.teachmeskills.eshop.config.JwtProvider;
 import by.teachmeskills.eshop.dto.UserDto;
-import by.teachmeskills.eshop.entities.User;
 import by.teachmeskills.eshop.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +24,7 @@ import java.util.Optional;
 public class RegisterController {
     private final UserService userService;
 
-    public RegisterController(UserService userService) {
+    public RegisterController(UserService userService, JwtProvider jwtProvider) {
         this.userService = userService;
     }
 

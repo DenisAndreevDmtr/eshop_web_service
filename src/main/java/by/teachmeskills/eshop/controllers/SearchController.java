@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+import static by.teachmeskills.eshop.utils.EshopConstants.PRICE_FROM;
+import static by.teachmeskills.eshop.utils.EshopConstants.PRICE_TO;
+import static by.teachmeskills.eshop.utils.EshopConstants.SEARCH_CATEGORY;
 import static by.teachmeskills.eshop.utils.EshopConstants.SEARCH_PARAM;
 
 @Tag(name = "search", description = "The search API")
@@ -76,9 +79,32 @@ public class SearchController {
                     description = "Could not find info"
             )
     })
-    @PostMapping
-    public ResponseEntity<List<ProductDto>> getSearchResult(@RequestParam(SEARCH_PARAM) String searchParametr) {
-        List<ProductDto> productDtos = productService.getSearchResult(searchParametr);
+    @PostMapping("/result")
+    public ResponseEntity<List<ProductDto>> getSearchResultPostMapping(
+            @RequestParam(PRICE_FROM) Optional<Integer> oPriceFrom,
+            @RequestParam(PRICE_TO) Optional<Integer> oPriceTo,
+            @RequestParam(SEARCH_PARAM) String searchParametr,
+            @RequestParam(SEARCH_CATEGORY) String searchCategory,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "3") int pageSize
+    ) {
+        List<ProductDto> productDtos = productService.searchProducts(oPriceFrom, oPriceTo, searchParametr, searchCategory, pageNumber, pageSize);
+        if (Optional.ofNullable(productDtos).isPresent()) {
+            return new ResponseEntity<>(productDtos, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/result")
+    public ResponseEntity<List<ProductDto>> getSearchResultGetMapping(
+            @RequestParam(PRICE_FROM) Optional<Integer> oPriceFrom,
+            @RequestParam(PRICE_TO) Optional<Integer> oPriceTo,
+            @RequestParam(SEARCH_PARAM) String searchParametr,
+            @RequestParam(SEARCH_CATEGORY) String searchCategory,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "3") int pageSize
+    ) {
+        List<ProductDto> productDtos = productService.searchProducts(oPriceFrom, oPriceTo, searchParametr, searchCategory, pageNumber, pageSize);
         if (Optional.ofNullable(productDtos).isPresent()) {
             return new ResponseEntity<>(productDtos, HttpStatus.OK);
         }

@@ -1,13 +1,12 @@
 package by.teachmeskills.eshop.repositories;
 
 import by.teachmeskills.eshop.entities.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface CategoryRepository extends BaseRepository<Category> {
-    List<Category> getAllCategories();
-
-    String getCategoryNameByID(int id);
-
+@Repository
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Category getCategoryById(int id);
+
+    Category deleteById(int id);
 }

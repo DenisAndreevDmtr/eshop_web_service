@@ -1,13 +1,17 @@
 package by.teachmeskills.eshop.repositories;
 
 import by.teachmeskills.eshop.entities.Order;
+import by.teachmeskills.eshop.entities.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface OrderRepository extends BaseRepository<Order> {
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Integer> {
     Order getOrderById(int id);
 
-    public long countAllOrdersByUser(int id);
+    Page<Order> getOrdersByUserId(int id, Pageable pageable);
 
-    List<Order> getAllOrdersByUserId(int idUser, int pageReq);
+    void deleteOrderById(int id);
 }

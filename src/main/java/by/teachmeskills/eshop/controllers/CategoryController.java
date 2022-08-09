@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Min;
@@ -47,9 +48,12 @@ public class CategoryController {
                     description = "Category has not been found - not found"
             )
     })
-    @GetMapping("/{id}/{page}")
-    public ResponseEntity<CategoryDto> openCategoryPagePaging(@Min(value = 1) @PathVariable int id, @Min(value = 1) @PathVariable int page) {
-        CategoryDto categoryDto = categoryService.getCategoryDataPaging(id, page);
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDto> openCategoryPage(
+            @Min(value = 1) @PathVariable int id,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "1") int pageSize) {
+        CategoryDto categoryDto = categoryService.getCategoryData(id, pageNumber, pageSize);
         if (Optional.ofNullable(categoryDto).isPresent()) {
             return new ResponseEntity<>(categoryDto, HttpStatus.OK);
         }

@@ -2,6 +2,7 @@ package by.teachmeskills.eshop.dto.converters;
 
 import by.teachmeskills.eshop.dto.OrderDto;
 import by.teachmeskills.eshop.entities.Order;
+import by.teachmeskills.eshop.repositories.OrderRepository;
 import by.teachmeskills.eshop.repositories.ProductRepository;
 import by.teachmeskills.eshop.repositories.UserRepository;
 import org.springframework.stereotype.Component;
@@ -14,11 +15,13 @@ public class OrderConverter {
     private final ProductConverter productConverter;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
 
-    public OrderConverter(ProductConverter productConverter, UserRepository userRepository, ProductRepository productRepository) {
+    public OrderConverter(ProductConverter productConverter, UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository) {
         this.productConverter = productConverter;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
     }
 
     public OrderDto toDto(Order order) {
@@ -39,8 +42,8 @@ public class OrderConverter {
                         .id(od.getId())
                         .dateCreation(od.getDate())
                         .priceOrder(od.getPrice())
-                        .user(userRepository.getUserById(od.getUserId()))
-                        .products(productRepository.getAllProductsByOrderId(od.getId()))
+                        .user(userRepository.findById(od.getUserId()).get())
+                        .products(orderRepository.getOrderById(od.getId()).getProducts())
                         .build())
                 .orElse(null);
     }
